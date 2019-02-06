@@ -1,3 +1,9 @@
 <h1>
   SKYSCRAPER POC
 </h1>
+
+<%= form_for @link, url: {controller: "links", action: "create"} do |r| %>
+  <%= r.label :link %>
+  <%= r.text_field :link %>
+  <%= r.submit "Scrape URL" %>
+<% end %>
