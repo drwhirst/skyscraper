@@ -11,8 +11,29 @@ class LinksController < ApplicationController
         @link = Link.new(links_params)
         require 'open-uri'
         doc = Nokogiri::HTML(open(@link.link))
-        @link.body = doc.css("p").text
-        @link.title = doc.css("h1").text
+
+        doc.css("blockquote").each do |node|
+            node.remove
+        end
+
+        the_css = doc.css('p')
+
+        ub = Sanitize.fragment(the_css, :elements => ['p']).split(' ')
+        title = doc.css("h1").text
+
+        ub.each do |f|
+            f.gsub!(".", ". ")
+            f.gsub!("Advertisement", "")
+            f.gsub!("Supported", "")
+            f.gsub!("byBy", " By ")
+            f.gsub!(". )", '.) ')
+            f.gsub!(". ]", '.] ')
+            f.gsub!('. "[', '" [')
+            f.gsub!('by', '')
+        end
+        
+        @link.body = ub.join(" ")
+        @link.title = title
         @link.save
         redirect_to @link
     end

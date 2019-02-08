@@ -1,2 +1,2 @@
 <h1><%=  link_to @link.title, @link.link %></h1>
-<p><%= @link.body %></p>
+<p><%= simple_format(@link.body) %></p>
